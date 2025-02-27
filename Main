@@ -1,0 +1,198 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web;
+
+namespace ConsoleApp4
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            string nomeNovoUsuario ="";
+            string senhaNovoUsuario = "";
+            List<(string, string)> Usuarios = new List<(string, string)>
+            {
+                ("Kassio", "pizza"),
+                ("Neylson", "coxinha")
+            };
+
+            Console.WriteLine("Bem vindo!");
+            Console.WriteLine("Você possui login? S/N");
+            char testeDeLogin = char.Parse(Console.ReadLine());
+
+            if(testeDeLogin == 'S')
+            {
+                LoginNovoUsuario(Usuarios);
+            }
+            else
+            {
+                CadastroNovoUsuario(ref nomeNovoUsuario, ref senhaNovoUsuario, ref Usuarios);
+                LoginNovoUsuario(Usuarios);
+            }
+
+        }
+
+
+        //Adiciona um usuário novo
+        static void CadastroNovoUsuario(ref string nomeNovoUsuario,ref string senhaNovoUsuario, ref List<(string, string)> Usuarios)
+        {
+            Console.WriteLine("Modulo cadastro");
+            Console.WriteLine("Digite seu usuário:");
+            nomeNovoUsuario = Console.ReadLine();
+            Console.WriteLine("Digite sua senha:");
+            senhaNovoUsuario = Console.ReadLine();
+            
+            Usuarios.Add((nomeNovoUsuario, senhaNovoUsuario)); // Adiciona ele a lista com sua senha!
+            
+        }
+
+
+        //Solicita o Login
+        static void LoginNovoUsuario(List<(string, string)>Usuarios)
+        {
+            bool teste = true;
+
+            Console.WriteLine("Modulo Login");
+            Console.WriteLine("Digite seu usuário:");
+            string nomeNovoUsuario = Console.ReadLine();
+
+            var usuarioEncontrado = Usuarios.Find(u => u.Item1 == nomeNovoUsuario); // Verifica usuário existente 
+
+            if (usuarioEncontrado.Item1 != null)
+            {
+                Console.WriteLine("Digite sua senha:");
+                string senhaNovoUsuario = Console.ReadLine();
+
+                while (teste){ 
+                if (senhaNovoUsuario == usuarioEncontrado.Item2)
+                {
+                        teste = false;
+                    MeuAplicativo(Usuarios);
+                }
+                else
+                {
+                    Console.WriteLine("Senha incorreta. Tente novamente.");
+                        senhaNovoUsuario = Console.ReadLine();
+                }
+            }
+            }
+            else
+            {
+                Console.WriteLine("Usuário não encontrado!");
+            }
+        }
+
+
+        static void MeuAplicativo(List<(string, string)>Usuario)
+        {
+            // Escopo do APP
+            float valor = 0;
+            Console.WriteLine("Bem-vindo");
+            Console.WriteLine("Quantas vezes deseja treinar na semana?");
+            int diasDeTreino = int.Parse(Console.ReadLine());
+            Console.WriteLine("Qual horário?");
+            Console.WriteLine("1- Manhã");
+            Console.WriteLine("2- Tarde");
+            Console.WriteLine("3- Noite");
+            int horarioDeTreino = int.Parse(Console.ReadLine());
+
+            CalculoValorAPagar(diasDeTreino, horarioDeTreino, ref valor);
+
+            if (horarioDeTreino == 1)
+            {
+                Console.WriteLine("Selecionado Manhã");
+                Console.WriteLine("Valor á pagar");
+                Console.WriteLine($"Valor á pagar {valor}");
+            }
+            else if (horarioDeTreino == 2)
+            {
+                Console.WriteLine("Selecionado Tarde");
+                Console.WriteLine($"Valor á pagar {valor}");
+            }
+            else
+            {
+                Console.WriteLine("Selecionado Noite");
+                Console.WriteLine($"Valor á pagar {valor}");
+            }
+
+
+           //Solicita a forma de pagamento
+            Console.WriteLine("Selecione a forma de pagamento:");
+            Console.WriteLine("1- PIX");
+            Console.WriteLine("2- Cartão");
+            Console.WriteLine("3- Boleto");
+            int formaDePagamento = int.Parse(Console.ReadLine());
+
+            if(formaDePagamento == 1)
+            {
+                Console.WriteLine($"Selecionado: PIX");
+                Console.WriteLine("Seu código PIX é:");
+                GerarPix();
+                Console.WriteLine("Aguargado pagamento");
+                Console.WriteLine("Carregando...");
+            }
+            else if (formaDePagamento == 2)
+            {
+                GerarCartaoEBoleto();
+                Console.WriteLine($"Selecionado: CARTAO");
+                Console.WriteLine("Digite o numero do seu cartão");
+                var cartaoUsuario = Console.ReadLine();
+            }
+            else
+            {
+                GerarCartaoEBoleto();
+                Console.WriteLine($"Selecionado: BOLETO");
+                Console.WriteLine("Digite o numero do seu boleto");
+                var boletoUsuario = Console.ReadLine();
+            }
+        }
+
+
+        //Gera o valor total a pagar pelas aulas!
+        static float CalculoValorAPagar(int diasDetreino, int horarioDeTreino, ref float valor)
+        {
+            if (horarioDeTreino == 1)
+            {
+                valor = diasDetreino * 14.99f;
+            }
+            else if(horarioDeTreino == 2)
+            {
+                valor = diasDetreino * 17.99f;
+
+            }
+            else
+            {
+                valor = diasDetreino * 19.99f;
+            }
+
+            return valor;
+        }
+
+
+        //Gera um código de PIX
+        public static Guid GerarPix()
+        {
+            Guid g = Guid.NewGuid();
+            Console.WriteLine(g);
+            Console.WriteLine(Guid.NewGuid());
+            Console.WriteLine(Guid.NewGuid());
+
+            return g;
+        }
+
+
+        //Gera um código de Boleto ou Cartão
+        public static Guid GerarCartaoEBoleto()
+        {
+            Guid g = Guid.NewGuid();
+            Console.WriteLine(g);
+            return g;
+        }
+    }
+}
